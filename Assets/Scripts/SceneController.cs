@@ -9,8 +9,48 @@ public class SceneController : MonoBehaviour
     public const float offsetX = 2.5f;
     public const float offsetY = 2.5f;
 
+    private int score = 0;
+
     [SerializeField] MemoryCard originalCard;
     [SerializeField] Sprite[] images;
+
+    private MemoryCard firstRevealed;
+    private MemoryCard secondRevealed;
+
+    public bool canReveal
+    {
+        get { return secondRevealed == null; }
+    }
+
+    public void CardRevealed (MemoryCard card)
+    {
+        if (firstRevealed == null)
+        {
+            firstRevealed = card;
+        }
+        else
+        {
+            secondRevealed = card;
+            StartCoroutine(CheckMatch());
+        }
+    }
+
+    private IEnumerator CheckMatch()
+    {
+        if (firstRevealed.Id == secondRevealed.Id)
+        {
+            score++;
+            Debug.Log($"Score: {score}");
+        }
+        else {
+            yield return new WaitForSeconds(.5f);
+
+            firstRevealed.Unreveal();
+            secondRevealed.Unreveal();
+        }
+        firstRevealed = null;
+        secondRevealed = null;
+    }
 
     void Start()
     {
