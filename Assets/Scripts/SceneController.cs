@@ -29,8 +29,24 @@ public class SceneController : MonoBehaviour
     {
         Vector3 startPos = originalCard.transform.position;
 
-        int[] numbers = {0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8};
+        //make array 0-21 for each sprite
+        int[] numbers = new int[22];
+        for (int i = 0; i < 22; i++)
+        {
+            numbers[i] = i;
+        }
+
+        //shuffle and get two copies of the first 9
         numbers = ShuffleArray(numbers);
+        int[] selectedNumbers = new int[18];
+        for (int i = 0; i < 18; i += 2)
+        {
+            selectedNumbers[i] = numbers[i];
+            selectedNumbers[i + 1] = numbers[i];
+        }
+
+        //shuffle again
+        selectedNumbers = ShuffleArray(selectedNumbers);
 
         for (int i = 0; i < gridCols; i++)
         {
@@ -47,7 +63,7 @@ public class SceneController : MonoBehaviour
                 }
 
                 int index = j * gridCols + i;
-                int id = numbers[index];
+                int id = selectedNumbers[index];
                 card.SetCard(id, images[id]);
 
                 float posX = (offsetX * i) + startPos.x;
