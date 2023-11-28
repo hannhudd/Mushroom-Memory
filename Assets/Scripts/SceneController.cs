@@ -8,14 +8,16 @@ public class SceneController : MonoBehaviour
 {
     public const int gridRows = 3;
     public const int gridCols = 6;
-    public const float offsetX = 2.5f;
-    public const float offsetY = 2.5f;
+    public const float offsetX = 2.25f;
+    public const float offsetY = 2.25f;
 
     private int score = 0;
+    private int mistakes = 0;
 
     [SerializeField] MemoryCard originalCard;
     [SerializeField] Sprite[] images;
     [SerializeField] TMP_Text scoreLabel;
+    [SerializeField] TMP_Text mistakesLabel;
 
     private MemoryCard firstRevealed;
     private MemoryCard secondRevealed;
@@ -91,10 +93,12 @@ public class SceneController : MonoBehaviour
         if (firstRevealed.Id == secondRevealed.Id)
         {
             score++;
-            scoreLabel.text = $"Score: {score}";
+            scoreLabel.text = $"matches: {score}";
         }
         else
         {
+            mistakes++;
+            mistakesLabel.text = $"mistakes: {mistakes}";
             yield return new WaitForSeconds(.5f);
 
             firstRevealed.Unreveal();
