@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
+using UnityEngine.SceneManagement;
 
 public class SceneController : MonoBehaviour
 {
@@ -13,6 +15,7 @@ public class SceneController : MonoBehaviour
 
     [SerializeField] MemoryCard originalCard;
     [SerializeField] Sprite[] images;
+    [SerializeField] TMP_Text scoreLabel;
 
     private MemoryCard firstRevealed;
     private MemoryCard secondRevealed;
@@ -20,36 +23,6 @@ public class SceneController : MonoBehaviour
     public bool canReveal
     {
         get { return secondRevealed == null; }
-    }
-
-    public void CardRevealed (MemoryCard card)
-    {
-        if (firstRevealed == null)
-        {
-            firstRevealed = card;
-        }
-        else
-        {
-            secondRevealed = card;
-            StartCoroutine(CheckMatch());
-        }
-    }
-
-    private IEnumerator CheckMatch()
-    {
-        if (firstRevealed.Id == secondRevealed.Id)
-        {
-            score++;
-            Debug.Log($"Score: {score}");
-        }
-        else {
-            yield return new WaitForSeconds(.5f);
-
-            firstRevealed.Unreveal();
-            secondRevealed.Unreveal();
-        }
-        firstRevealed = null;
-        secondRevealed = null;
     }
 
     void Start()
@@ -82,6 +55,42 @@ public class SceneController : MonoBehaviour
                 card.transform.position = new Vector3(posX, posY, startPos.x);
             }
         }
+    }
+
+    public void CardRevealed(MemoryCard card)
+    {
+        if (firstRevealed == null)
+        {
+            firstRevealed = card;
+        }
+        else
+        {
+            secondRevealed = card;
+            StartCoroutine(CheckMatch());
+        }
+    }
+
+    private IEnumerator CheckMatch()
+    {
+        if (firstRevealed.Id == secondRevealed.Id)
+        {
+            score++;
+            scoreLabel.text = $"Score: {score}";
+        }
+        else
+        {
+            yield return new WaitForSeconds(.5f);
+
+            firstRevealed.Unreveal();
+            secondRevealed.Unreveal();
+        }
+        firstRevealed = null;
+        secondRevealed = null;
+    }
+
+    public void Restart()
+    {
+        SceneManager.LoadScene("Scene");
     }
 
     private int[] ShuffleArray(int[] numbers)
